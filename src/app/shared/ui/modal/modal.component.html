@@ -1,0 +1,81 @@
+@for (modal of modals(); track modal.id) {
+  <dialog
+    #dialog
+    class="modal"
+    [attr.data-severity]="modal.config.severity"
+    [attr.data-size]="modal.config.size"
+    [attr.data-closing]="modal.closing || null"
+    [attr.aria-label]="modal.config.title"
+    (cancel)="onCancel($event, modal)"
+    (click)="onBackdropClick($event, modal)"
+  >
+    <div class="modal__panel">
+      <span class="modal__handle" aria-hidden="true"></span>
+
+      <header class="modal__header">
+        <span class="modal__icon" aria-hidden="true">
+          <span class="material-symbols-rounded filled">{{ modal.config.icon }}</span>
+        </span>
+
+        <div class="modal__heading">
+          @if (modal.config.overline) {
+            <span class="overline modal__overline">{{ modal.config.overline }}</span>
+          }
+          <h2 class="modal__title">{{ modal.config.title }}</h2>
+        </div>
+
+        @if (modal.config.dismissible) {
+          <button type="button" class="modal__close" aria-label="Fechar" (click)="dismiss(modal)">
+            <span class="material-symbols-rounded" aria-hidden="true">close</span>
+          </button>
+        }
+      </header>
+
+      <div class="modal__body">
+        @if (modal.config.message) {
+          <p class="modal__message">{{ modal.config.message }}</p>
+        }
+
+        @if (modal.config.details.length > 0) {
+          <dl class="modal__details">
+            @for (detail of modal.config.details; track detail.label; let i = $index) {
+              <div class="modal__detail fade-in-up" [style.--delay]="i + 1">
+                <dt>{{ detail.label }}</dt>
+                <dd [class.modal__detail-value--emphasis]="detail.emphasis">{{ detail.value }}</dd>
+              </div>
+            }
+          </dl>
+        }
+
+        @if (modal.config.content) {
+          <div class="modal__content">
+            <ng-container
+              [ngComponentOutlet]="modal.config.content"
+              [ngComponentOutletInjector]="modal.injector"
+            />
+          </div>
+        }
+      </div>
+
+      @if (modal.config.actions.length > 0) {
+        <footer class="modal__actions">
+          @for (action of modal.config.actions; track action.id; let i = $index) {
+            <button
+              type="button"
+              class="modal__action fade-in-up"
+              [style.--delay]="i + 2"
+              [attr.data-variant]="action.variant ?? 'filled'"
+              [attr.autofocus]="action.autoFocus || null"
+              (click)="runAction(modal, action)"
+            >
+              @if (action.icon) {
+                <span class="material-symbols-rounded" aria-hidden="true">{{ action.icon }}</span>
+              }
+              <span>{{ action.label }}</span>
+            </button>
+          }
+        </footer>
+      }
+    </div>
+  </dialog>
+}

@@ -1,0 +1,83 @@
+@use '@angular/material' as mat;
+
+html {
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$cyan-palette,
+        tertiary: mat.$orange-palette,
+      ),
+      typography: (
+        plain-family: (
+          'Inter',
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif,
+        ),
+        brand-family: (
+          'Manrope',
+          'Inter',
+          sans-serif,
+        ),
+        bold-weight: 700,
+        medium-weight: 600,
+        regular-weight: 400,
+      ),
+      density: (
+        scale: 0,
+      ),
+    )
+  );
+
+  @include mat.theme-overrides(
+    (
+      primary: var(--color-primary),
+      on-primary: var(--color-on-primary),
+      primary-container: var(--color-primary-soft),
+      on-primary-container: var(--color-primary-deep),
+      secondary: var(--color-primary-hover),
+      on-secondary: var(--color-on-primary),
+      secondary-container: var(--color-primary-soft),
+      on-secondary-container: var(--color-primary-deep),
+      tertiary: var(--color-accent),
+      on-tertiary: var(--color-on-primary),
+      tertiary-container: var(--color-accent-soft),
+      on-tertiary-container: var(--color-accent),
+      error: var(--color-danger),
+      on-error: var(--color-on-danger),
+      error-container: var(--color-danger-soft),
+      on-error-container: var(--color-danger),
+      background: var(--color-background),
+      on-background: var(--color-text),
+      surface: var(--color-surface),
+      on-surface: var(--color-text),
+      surface-variant: var(--color-surface-variant),
+      on-surface-variant: var(--color-text-secondary),
+      surface-container-lowest: var(--color-surface),
+      surface-container-low: var(--color-surface),
+      surface-container: var(--color-surface-variant),
+      surface-container-high: var(--color-surface-variant),
+      surface-container-highest: var(--color-surface-variant),
+      outline: var(--color-outline-strong),
+      outline-variant: var(--color-outline),
+      inverse-surface: var(--color-text),
+      inverse-on-surface: var(--color-surface),
+      scrim: var(--color-backdrop),
+      corner-extra-small: var(--radius-sm),
+      corner-small: var(--radius-md),
+      corner-medium: var(--radius-lg),
+      corner-large: var(--radius-xl),
+      corner-extra-large: var(--radius-xl),
+      corner-full: var(--radius-pill),
+    )
+  );
+}
+
+.mat-mdc-tooltip,
+.mat-mdc-snack-bar-container,
+.mat-mdc-menu-panel,
+.mat-mdc-select-panel {
+  --mat-sys-level2: var(--shadow-2);
+  --mat-sys-level3: var(--shadow-3);
+}

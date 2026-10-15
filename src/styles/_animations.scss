@@ -1,0 +1,68 @@
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes risk-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--risk-maximum) 45%, transparent);
+  }
+
+  70% {
+    box-shadow: 0 0 0 12px color-mix(in srgb, var(--risk-maximum) 0%, transparent);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--risk-maximum) 0%, transparent);
+  }
+}
+
+.fade-in-up {
+  --delay: 0;
+  animation: fade-in-up var(--duration-long) var(--ease-emphasized) backwards;
+  animation-delay: calc(var(--delay) * 80ms);
+}
+
+.scale-in {
+  --delay: 0;
+  animation: scale-in var(--duration-medium) var(--ease-emphasized) backwards;
+  animation-delay: calc(var(--delay) * 80ms);
+}
+
+.risk-pulse {
+  animation: risk-pulse 1800ms var(--ease-standard) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-up,
+  .scale-in,
+  .risk-pulse {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

@@ -1,1 +1,27 @@
-/* You can add global styles to this file, and also import other style files */
+@use './styles/tokens';
+@use './styles/material';
+@use './styles/reset';
+@use './styles/background';
+@use './styles/typography';
+@use './styles/animations';
+@use './styles/patterns';
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+
+  @media (min-width: 768px) {
+    padding-inline: var(--space-6);
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

@@ -1,0 +1,49 @@
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.page-header__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+
+  h1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.risk-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--risk-normal);
+  background: var(--risk-normal-soft);
+
+  &[data-status='ATENÇÃO'] {
+    color: var(--risk-attention);
+    background: var(--risk-attention-soft);
+  }
+
+  &[data-status='ALERTA'] {
+    color: var(--risk-alert);
+    background: var(--risk-alert-soft);
+  }
+
+  &[data-status='ALERTA MÁXIMO'] {
+    color: var(--risk-maximum);
+    background: var(--risk-maximum-soft);
+  }
+}
