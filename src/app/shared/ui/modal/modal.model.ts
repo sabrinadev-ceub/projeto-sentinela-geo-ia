@@ -42,7 +42,7 @@ export interface ModalConfig<TData = unknown> {
   icon?: string;
   details?: ModalDetail[];
   actions?: ModalAction[];
-  /** `false` trava ESC, backdrop e botão de fechar — para alerta que exige decisão. */
+  /** `false` trava ESC, backdrop e botão de fechar, para alerta que exige decisão. */
   dismissible?: boolean;
   /** Componente projetado no corpo, recebendo `MODAL_DATA` e `MODAL_REF`. */
   content?: Type<unknown>;

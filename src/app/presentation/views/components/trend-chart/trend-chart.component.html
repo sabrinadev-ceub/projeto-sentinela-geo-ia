@@ -1,0 +1,39 @@
+@let chart = geometry();
+
+<div class="chart" role="img" [attr.aria-label]="label()">
+  <svg class="chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    @for (guide of chart.guides; track $index) {
+      <line
+        class="chart__guide"
+        x1="0"
+        x2="100"
+        [attr.y1]="guide.y"
+        [attr.y2]="guide.y"
+        vector-effect="non-scaling-stroke"
+      />
+    }
+    @if (filled() && chart.area) {
+      <polygon class="chart__area" [attr.points]="chart.area" />
+    }
+    @if (chart.line) {
+      <polyline class="chart__line" [attr.points]="chart.line" vector-effect="non-scaling-stroke" />
+    }
+  </svg>
+
+  @for (guide of chart.guides; track $index) {
+    @if (guide.label) {
+      <span class="chart__guide-label mono" [style.top.%]="guide.y" aria-hidden="true">{{
+        guide.label
+      }}</span>
+    }
+  }
+
+  @if (chart.last; as last) {
+    <span
+      class="chart__dot"
+      [style.left.%]="last.x"
+      [style.top.%]="last.y"
+      aria-hidden="true"
+    ></span>
+  }
+</div>

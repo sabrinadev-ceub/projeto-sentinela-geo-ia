@@ -33,7 +33,7 @@ export interface ModalAlertConfig extends Omit<ModalConfig, 'actions'> {
  *
  * Todo fechamento passa por `close()`, que marca `closing` e só remove o
  * registro depois de `MODAL_EXIT_DURATION_MS`. Com isso a animação de saída
- * vale para ESC, backdrop, botão de ação e fechamento programático — nenhum
+ * vale para ESC, backdrop, botão de ação e fechamento programático: nenhum
  * caminho some da tela sem transição.
  */
 @Injectable({ providedIn: 'root' })
@@ -128,7 +128,7 @@ export class ModalService {
 
   /**
    * Alerta crítico de emergência: severidade `critical`, sem dispensa por ESC
-   * ou backdrop. Exigir uma decisão explícita é o ponto — um disparo à
+   * ou backdrop. Exigir uma decisão explícita é o ponto: um disparo à
    * população não pode ser cancelado por clique acidental fora do painel.
    */
   emergency(config: ModalConfirmConfig): Promise<boolean> {

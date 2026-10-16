@@ -30,7 +30,7 @@ export type ShapValues = Record<TelemetryVariable, number>;
 export interface SensorReading {
   /** Pluviometria das últimas 24 horas, em mm. */
   rainfall24h: number;
-  /** Chuva acumulada em 5 dias, em mm — gatilho de deslizamento do INPE. */
+  /** Chuva acumulada em 5 dias, em mm. Gatilho de deslizamento do INPE. */
   accumulatedRainfall5d: number;
   /** Cota do rio na régua da estação, em metros. */
   riverLevel: number;

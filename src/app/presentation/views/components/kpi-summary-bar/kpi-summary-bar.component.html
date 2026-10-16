@@ -1,0 +1,31 @@
+<section class="kpis" aria-labelledby="kpis-title">
+  <h2 id="kpis-title" class="section-label">Indicadores da Meta 2.2.4 · PN-PDC 2025-2035</h2>
+
+  <div class="kpis__grid panel">
+    @for (card of cards(); track card.id) {
+      <article class="kpi" [attr.data-tone]="card.tone">
+        <h3 class="kpi__label">{{ card.label }}</h3>
+
+        <p class="kpi__value tabular">
+          <span class="kpi__number">{{ card.value }}</span>
+          @if (card.suffix) {
+            <span class="kpi__suffix">{{ card.suffix }}</span>
+          }
+        </p>
+
+        <div
+          class="kpi__track"
+          role="progressbar"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          [attr.aria-valuenow]="card.progress * 100"
+          [attr.aria-label]="card.progressLabel"
+        >
+          <span class="kpi__fill" [style.width.%]="card.progress * 100"></span>
+        </div>
+
+        <p class="kpi__caption">{{ card.caption }}</p>
+      </article>
+    }
+  </div>
+</section>

@@ -1,0 +1,104 @@
+@if (assessment(); as result) {
+  <section class="focus panel" aria-labelledby="focus-title">
+    <div class="risk risk-tone" [attr.data-status]="result.status" aria-live="polite">
+      <header class="risk__header">
+        <span class="section-label">Estação em foco</span>
+        @if (station(); as current) {
+          <h2 id="focus-title" class="risk__station">{{ current.name }}</h2>
+          <p class="risk__basin">
+            Bacia {{ current.basin.code }} · {{ current.basin.name }}/{{ current.basin.state }}
+          </p>
+        }
+      </header>
+
+      <div class="risk__score">
+        <span class="section-label">Probabilidade de risco</span>
+        <p class="risk__number tabular">{{ result.riskScore }}<small>%</small></p>
+        <span class="risk-chip" [attr.data-status]="result.status">{{ result.status }}</span>
+      </div>
+
+      <div class="scale" aria-hidden="true">
+        <div class="scale__track">
+          @for (band of scale; track band.status) {
+            <span
+              class="scale__band risk-tone"
+              [attr.data-status]="band.status"
+              [class.scale__band--active]="band.status === result.status"
+              [style.width.%]="band.width"
+            ></span>
+          }
+          <span class="scale__marker" [style.left.%]="result.riskScore"></span>
+        </div>
+        <div class="scale__labels">
+          @for (band of scale; track band.status) {
+            <span [style.width.%]="band.width">{{ band.label }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="trend">
+        <div class="trend__header">
+          <span class="section-label">Evolução do risco</span>
+          <span class="trend__since mono">desde {{ historySince() }}</span>
+        </div>
+        <app-trend-chart
+          class="trend__chart"
+          [values]="riskSeries()"
+          [max]="100"
+          [capacity]="historyCapacity"
+          [guides]="scoreGuides"
+          [filled]="true"
+          [label]="'Evolução da probabilidade de risco desde ' + historySince()"
+        />
+      </div>
+
+      @if (result.escalationReason) {
+        <p class="risk__escalation">
+          <strong>Escalada de protocolo.</strong> {{ result.escalationReason }}
+        </p>
+      }
+
+      <div class="risk__action">
+        <button
+          type="button"
+          class="xai__trigger"
+          [disabled]="!canTriggerAlert()"
+          aria-describedby="xai-trigger-hint"
+          (click)="requestManualAlert()"
+        >
+          {{ isDispatching() ? 'Difundindo alerta…' : 'Disparar alerta manual' }}
+        </button>
+        <p id="xai-trigger-hint" class="risk__hint">{{ triggerHint() }}</p>
+      </div>
+    </div>
+
+    <section class="shap" aria-labelledby="shap-title">
+      <header class="shap__header">
+        <div>
+          <h3 id="shap-title" class="shap__title">Por que o modelo chegou a esse risco</h3>
+          <p class="shap__hint">Contribuição de cada variável na predição (SHAP)</p>
+        </div>
+        <span class="shap__sum tabular">Σ {{ weightSum() }}%</span>
+      </header>
+
+      <ol class="shap__list">
+        @for (bar of bars(); track bar.variable) {
+          <li class="bar" [class.bar--dominant]="bar.isDominant">
+            <div class="bar__row">
+              <span class="bar__label">{{ bar.label }}</span>
+              <span class="bar__reading tabular">{{ bar.reading }}</span>
+              <span class="bar__weight tabular">{{ bar.weight }}%</span>
+            </div>
+            <div class="bar__track" aria-hidden="true">
+              <span class="bar__fill" [style.width.%]="bar.width"></span>
+            </div>
+          </li>
+        }
+      </ol>
+    </section>
+  </section>
+} @else {
+  <section class="focus panel">
+    <p class="focus__empty">Selecione uma estação para ver a predição.</p>
+  </section>
+}

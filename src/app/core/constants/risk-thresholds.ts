@@ -4,7 +4,7 @@ import {
   VariableThreshold,
 } from '../domain/models/station-telemetry.model';
 
-/** Ordem canônica de iteração das variáveis — fixa a ordem dos pesos SHAP. */
+/** Ordem canônica de iteração das variáveis, que fixa a ordem dos pesos SHAP. */
 export const TELEMETRY_VARIABLES: readonly TelemetryVariable[] = [
   'accumulatedRainfall5d',
   'rainfall24h',
@@ -74,7 +74,7 @@ export const DEFAULT_RISK_THRESHOLDS: StationThresholds = {
 };
 
 /**
- * Importância base de cada variável no modelo. Soma exatamente 1 — é o que
+ * Importância base de cada variável no modelo. Soma exatamente 1, e é o que
  * garante que a pontuação ponderada caiba na escala de 0 a 100 sem reescala.
  */
 export const VARIABLE_WEIGHTS: Record<TelemetryVariable, number> = {

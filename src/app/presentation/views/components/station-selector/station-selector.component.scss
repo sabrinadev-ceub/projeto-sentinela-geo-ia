@@ -1,0 +1,149 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.selector {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.selector__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.selector__hint {
+  font-size: 0.6875rem;
+  color: var(--color-text-disabled);
+}
+
+.selector__options {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  transition: background-color var(--duration-short) var(--ease-standard);
+
+  & + & {
+    border-top: 1px solid var(--color-outline);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 2px;
+    background: transparent;
+  }
+
+  &:hover {
+    background: var(--color-surface-variant);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+}
+
+.option--selected {
+  background: var(--color-surface-variant);
+
+  &::before {
+    background: var(--color-text);
+  }
+}
+
+.option__main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.option__code {
+  margin-right: var(--space-2);
+  font-size: 0.625rem;
+  color: var(--color-text-disabled);
+}
+
+.option__name {
+  overflow: hidden;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text);
+}
+
+.option__meta {
+  overflow: hidden;
+  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+}
+
+.option__offline {
+  color: var(--color-warning);
+}
+
+.option__side {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: var(--space-4);
+}
+
+@media (max-width: 599px) {
+  .option__side .risk-chip {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+.option__score {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  min-width: 4.5ch;
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--tone);
+
+  small {
+    font-size: 0.8125rem;
+    font-weight: 400;
+  }
+}
+
+.option__trend {
+  margin-left: var(--space-1);
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}

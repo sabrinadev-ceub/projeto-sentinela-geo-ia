@@ -7,7 +7,7 @@ import {
 } from './station-telemetry.model';
 
 /**
- * Contribuição individual de uma variável para a predição — é a carga de XAI
+ * Contribuição individual de uma variável para a predição. É a carga de XAI
  * que a interface precisa para justificar o risco ao operador da Defesa Civil.
  */
 export interface RiskDriver {
@@ -22,7 +22,7 @@ export interface RiskDriver {
   severity: number;
   /** Status que a variável atingiria isoladamente. */
   status: RiskStatus;
-  /** Peso SHAP em % — mesmo número publicado em `ShapValues`. */
+  /** Peso SHAP em %, o mesmo número publicado em `ShapValues`. */
   weight: number;
   thresholds: VariableThreshold;
 }

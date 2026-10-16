@@ -1,0 +1,96 @@
+<figure class="map">
+  <svg
+    class="map__svg"
+    [attr.viewBox]="viewBox"
+    role="group"
+    aria-label="Mapa da rede de monitoramento"
+  >
+    <g class="map__graticule" aria-hidden="true">
+      @for (line of latitudes; track line.value) {
+        <line
+          [attr.x1]="view.x"
+          [attr.x2]="view.x + view.width"
+          [attr.y1]="line.value"
+          [attr.y2]="line.value"
+          vector-effect="non-scaling-stroke"
+        />
+        <text class="map__coord" [attr.x]="view.x + 0.4" [attr.y]="line.value - 0.5">
+          {{ line.label }}
+        </text>
+      }
+      @for (line of longitudes; track line.value) {
+        <line
+          [attr.x1]="line.value"
+          [attr.x2]="line.value"
+          [attr.y1]="view.y"
+          [attr.y2]="view.y + view.height"
+          vector-effect="non-scaling-stroke"
+        />
+        <text class="map__coord" [attr.x]="line.value + 0.4" [attr.y]="view.y + view.height - 0.6">
+          {{ line.label }}
+        </text>
+      }
+    </g>
+
+    <path
+      class="map__land"
+      [attr.d]="outline"
+      vector-effect="non-scaling-stroke"
+      aria-hidden="true"
+    />
+
+    @for (marker of markers(); track marker.id) {
+      <g
+        class="marker risk-tone"
+        [attr.data-status]="marker.status"
+        [class.marker--selected]="marker.selected"
+        [class.marker--offline]="!marker.isOnline"
+        role="button"
+        tabindex="0"
+        [attr.aria-pressed]="marker.selected"
+        [attr.aria-label]="marker.ariaLabel"
+        (click)="select(marker.id)"
+        (keydown.enter)="select(marker.id)"
+        (keydown.space)="$event.preventDefault(); select(marker.id)"
+      >
+        @if (marker.pulses) {
+          <circle class="marker__pulse" [attr.cx]="marker.x" [attr.cy]="marker.y" r="0.9" />
+        }
+        @if (marker.selected) {
+          <circle
+            class="marker__ring"
+            [attr.cx]="marker.x"
+            [attr.cy]="marker.y"
+            r="1.7"
+            vector-effect="non-scaling-stroke"
+          />
+          <path
+            class="marker__cross"
+            [attr.d]="marker.crosshair"
+            vector-effect="non-scaling-stroke"
+          />
+        }
+        <circle class="marker__hit" [attr.cx]="marker.x" [attr.cy]="marker.y" r="2.4" />
+        <circle class="marker__dot" [attr.cx]="marker.x" [attr.cy]="marker.y" r="0.9" />
+        <g class="marker__label" [class.marker__label--hidden]="marker.labelHidden">
+          <text
+            class="marker__place"
+            [attr.data-side]="marker.labelSide"
+            [attr.x]="marker.labelX"
+            [attr.y]="marker.labelY - 0.3"
+          >
+            {{ marker.place }}
+          </text>
+          <text
+            class="marker__score"
+            [attr.data-side]="marker.labelSide"
+            [attr.x]="marker.labelX"
+            [attr.y]="marker.labelY + 1.9"
+          >
+            {{ marker.riskScore }}%
+          </text>
+        </g>
+      </g>
+    }
+  </svg>
+</figure>

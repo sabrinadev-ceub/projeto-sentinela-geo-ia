@@ -37,7 +37,7 @@ interface StationSeed {
 const STATION_SEEDS: readonly StationSeed[] = [
   {
     id: 'EST-RS-62-MUCUM',
-    name: 'Estação Muçum — Rio Taquari',
+    name: 'Estação Muçum (Rio Taquari)',
     city: 'Muçum, RS',
     basin: {
       code: '62',
@@ -60,7 +60,7 @@ const STATION_SEEDS: readonly StationSeed[] = [
   },
   {
     id: 'EST-RJ-38-PETROPOLIS',
-    name: 'Estação Morro da Oficina — Petrópolis',
+    name: 'Estação Morro da Oficina (Petrópolis)',
     city: 'Petrópolis, RJ',
     basin: {
       code: '38',
@@ -84,7 +84,7 @@ const STATION_SEEDS: readonly StationSeed[] = [
   },
   {
     id: 'EST-PE-33-JABOATAO',
-    name: 'Estação Jardim Monte Verde — Jaboatão',
+    name: 'Estação Jardim Monte Verde (Jaboatão)',
     city: 'Jaboatão dos Guararapes, PE',
     basin: {
       code: '33',
@@ -105,6 +105,146 @@ const STATION_SEEDS: readonly StationSeed[] = [
       slopeDisplacement: 0.3,
     },
   },
+  {
+    id: 'EST-SC-84-BLUMENAU',
+    name: 'Estação Ponte de Ferro (Blumenau)',
+    city: 'Blumenau, SC',
+    basin: {
+      code: '84',
+      name: 'Itajaí',
+      state: 'SC',
+      region: 'Sul',
+    },
+    position: { latitude: -26.9194, longitude: -49.0661, altitude: 21 },
+    exposedPopulation: 15320,
+    thresholds: buildStationThresholds({
+      riverLevel: { attention: 6, alert: 8, maximum: 10 },
+    }),
+    readings: {
+      rainfall24h: 26,
+      accumulatedRainfall5d: 84,
+      riverLevel: 4.6,
+      soilSaturation: 66,
+      slopeDisplacement: 0.7,
+    },
+  },
+  {
+    id: 'EST-SP-58-SAO-SEBASTIAO',
+    name: 'Estação Barra do Sahy (São Sebastião)',
+    city: 'São Sebastião, SP',
+    basin: {
+      code: '58',
+      name: 'Litoral Norte Paulista',
+      state: 'SP',
+      region: 'Sudeste',
+    },
+    position: { latitude: -23.7676, longitude: -45.7683, altitude: 4 },
+    exposedPopulation: 6210,
+    thresholds: buildStationThresholds({
+      riverLevel: { attention: 1.4, alert: 2, maximum: 2.6 },
+      slopeDisplacement: { attention: 2, alert: 8, maximum: 24 },
+    }),
+    readings: {
+      rainfall24h: 38,
+      accumulatedRainfall5d: 112,
+      riverLevel: 0.95,
+      soilSaturation: 76,
+      slopeDisplacement: 2.6,
+    },
+  },
+  {
+    id: 'EST-MG-41-BELO-HORIZONTE',
+    name: 'Estação Ribeirão Arrudas (Belo Horizonte)',
+    city: 'Belo Horizonte, MG',
+    basin: {
+      code: '41',
+      name: 'Rio das Velhas',
+      state: 'MG',
+      region: 'Sudeste',
+    },
+    position: { latitude: -19.9191, longitude: -43.9386, altitude: 852 },
+    exposedPopulation: 10870,
+    thresholds: buildStationThresholds({
+      riverLevel: { attention: 1.8, alert: 2.6, maximum: 3.4 },
+      slopeDisplacement: { attention: 2, alert: 8, maximum: 24 },
+    }),
+    readings: {
+      rainfall24h: 21,
+      accumulatedRainfall5d: 63,
+      riverLevel: 0.9,
+      soilSaturation: 58,
+      slopeDisplacement: 0.8,
+    },
+  },
+  {
+    id: 'EST-AC-13-RIO-BRANCO',
+    name: 'Estação Rio Acre (Rio Branco)',
+    city: 'Rio Branco, AC',
+    basin: {
+      code: '13',
+      name: 'Purus',
+      state: 'AC',
+      region: 'Norte',
+    },
+    position: { latitude: -9.9747, longitude: -67.8106, altitude: 153 },
+    exposedPopulation: 11240,
+    thresholds: buildStationThresholds({
+      riverLevel: { attention: 12, alert: 13.5, maximum: 14 },
+    }),
+    readings: {
+      rainfall24h: 31,
+      accumulatedRainfall5d: 104,
+      riverLevel: 12.6,
+      soilSaturation: 74,
+      slopeDisplacement: 0.2,
+    },
+  },
+  {
+    id: 'EST-AM-14-MANAUS',
+    name: 'Estação Porto de Manaus (Rio Negro)',
+    city: 'Manaus, AM',
+    basin: {
+      code: '14',
+      name: 'Negro',
+      state: 'AM',
+      region: 'Norte',
+    },
+    position: { latitude: -3.1383, longitude: -60.0272, altitude: 32 },
+    exposedPopulation: 18650,
+    thresholds: buildStationThresholds({
+      riverLevel: { attention: 27.5, alert: 28.5, maximum: 29 },
+    }),
+    readings: {
+      rainfall24h: 14,
+      accumulatedRainfall5d: 52,
+      riverLevel: 25.8,
+      soilSaturation: 61,
+      slopeDisplacement: 0.1,
+    },
+  },
+  {
+    id: 'EST-MT-66-CUIABA',
+    name: 'Estação Rio Cuiabá (Cuiabá)',
+    city: 'Cuiabá, MT',
+    basin: {
+      code: '66',
+      name: 'Cuiabá',
+      state: 'MT',
+      region: 'Centro-Oeste',
+    },
+    position: { latitude: -15.6014, longitude: -56.0979, altitude: 146 },
+    exposedPopulation: 7480,
+    thresholds: buildStationThresholds({
+      riverLevel: { attention: 6, alert: 8, maximum: 9.5 },
+    }),
+    readings: {
+      rainfall24h: 17,
+      accumulatedRainfall5d: 55,
+      riverLevel: 3.2,
+      soilSaturation: 57,
+      slopeDisplacement: 0.2,
+    },
+  },
 ];
 
 /**
@@ -115,7 +255,7 @@ const STATION_SEEDS: readonly StationSeed[] = [
  * leituras, o que torna possível reproduzir um incidente em desenvolvimento.
  *
  * As leituras são persistidas em LocalStorage a cada ciclo, de modo que
- * recarregar a página continua de onde parou — é o mesmo contrato que um
+ * recarregar a página continua de onde parou. É o mesmo contrato que um
  * service worker precisaria honrar em operação real.
  */
 @Injectable({ providedIn: 'root' })

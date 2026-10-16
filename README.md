@@ -5,10 +5,24 @@ Artificial Explicável (XAI/SHAP) e disparo de alerta antecipado à Defesa Civil
 
 O projeto é alinhado à **Meta 2.2.4 do Plano Nacional de Proteção e Defesa
 Civil (PN-PDC 2025-2035)**: ampliar a cobertura de monitoramento e alerta
-antecipado em bacias hidrográficas de risco. As estações iniciais reproduzem
-três bacias da Divisão Hidrográfica Nacional com histórico de desastre —
-Taquari-Antas (62/RS), Litorânea do Rio de Janeiro (38/RJ) e Litorânea de
-Pernambuco (33/PE).
+antecipado em bacias hidrográficas de risco. A rede simulada tem nove
+estações nas cinco regiões do país, em locais com histórico de enchente ou
+deslizamento:
+
+| Região       | Estação                               | Risco principal     |
+| ------------ | ------------------------------------- | ------------------- |
+| Sul          | Muçum (Rio Taquari), RS               | Enchente            |
+| Sul          | Ponte de Ferro (Blumenau), SC         | Enchente            |
+| Sudeste      | Morro da Oficina (Petrópolis), RJ     | Deslizamento        |
+| Sudeste      | Barra do Sahy (São Sebastião), SP     | Deslizamento        |
+| Sudeste      | Ribeirão Arrudas (Belo Horizonte), MG | Inundação e encosta |
+| Nordeste     | Jardim Monte Verde (Jaboatão), PE     | Deslizamento        |
+| Norte        | Rio Acre (Rio Branco), AC             | Cheia de rio        |
+| Norte        | Porto de Manaus (Rio Negro), AM       | Cheia de rio        |
+| Centro-Oeste | Rio Cuiabá (Cuiabá), MT               | Cheia de rio        |
+
+Coordenadas e cotas de referência são aproximadas e os pontos de apoio e rotas
+de evacuação são fictícios: servem à simulação, não a operação real.
 
 Roda inteiramente no navegador: sem cadastro, sem servidor e sem dado saindo
 do dispositivo. Tudo é persistido no `localStorage`, o que sustenta a operação
@@ -16,7 +30,7 @@ offline-first esperada de um PWA usado em área de desastre.
 
 ## O que já existe
 
-**Etapa 1 — domínio, dados e sistema de modal.**
+**Etapa 1: domínio, dados e sistema de modal.**
 
 - **Telemetria de 5 sensores IoT por estação**: pluviometria 24h, chuva
   acumulada em 5 dias (gatilho de deslizamento do INPE), nível do rio,
@@ -41,7 +55,27 @@ offline-first esperada de um PWA usado em área de desastre.
   conteúdo dinâmico, ficha técnica de dados, botões customizáveis, fechamento
   por ESC e backdrop, e animações em cascata.
 
-Dashboard, mapa e telas de operação entram na etapa 2.
+**Etapa 2: Central de Comando (`presentation/`).**
+
+- **Facade como Controller** sobre o domínio, com estado somente leitura em
+  Signals e componentes de tela puros (Smart/Dumb).
+- **KPIs da Meta 2.2.4**: municípios monitorados (1.500/2.500), sensores IoT
+  LoRaWAN online, tempo médio de alerta (1m12s contra meta de 10 min) e taxa
+  de entrega multicanal.
+- **Condição da rede** em uma faixa: nível mais grave, estações afetadas e
+  conduta recomendada pelo protocolo.
+- **Mapa da rede de monitoramento** com as estações nas coordenadas reais,
+  lista de estações e **diário de vigilância** com cada mudança de nível e
+  cada disparo.
+- **Painel XAI** com probabilidade de risco, evolução recente, barras SHAP e
+  disparo manual sob confirmação.
+- **Leituras dos sensores** com o gráfico de evolução de cada grandeza contra
+  os limiares e a cota de transbordo.
+- **Tempestade extrema simulada** que dispara o alerta automático e abre a
+  modal de emergência com a difusão por canal em tempo real e a rota de
+  evacuação.
+- **Trilha de auditoria** dos disparos com latência, severidade, canais e
+  estado de sincronização offline.
 
 ## Como rodar o projeto?
 
@@ -167,7 +201,7 @@ repository.setStationOnline('EST-RJ-38-PETROPOLIS', false); // derruba o enlace
 
 Este é um projeto acadêmico de demonstração. A telemetria é simulada e o
 modelo de risco é uma aproximação determinística dos limiares publicados por
-INPE e CEMADEN — não substitui sistema oficial de alerta. Em emergência real,
+INPE e CEMADEN, e não substitui sistema oficial de alerta. Em emergência real,
 acione a Defesa Civil no **199** ou os Bombeiros no **193**.
 
 ## Licença

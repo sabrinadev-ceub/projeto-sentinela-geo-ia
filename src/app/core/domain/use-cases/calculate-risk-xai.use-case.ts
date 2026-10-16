@@ -30,15 +30,15 @@ import {
  *
  * O pipeline tem quatro etapas:
  *
- * 1. **Normalização** — cada leitura vira uma severidade de 0 a 1 por
+ * 1. **Normalização**: cada leitura vira uma severidade de 0 a 1 por
  *    interpolação linear entre os limiares físicos da estação.
- * 2. **Ponderação** — soma das severidades pelos pesos base do modelo, que
+ * 2. **Ponderação**: soma das severidades pelos pesos base do modelo, que
  *    somam 1.
- * 3. **Interação** — ganho superaditivo para as duas combinações que a
+ * 3. **Interação**: ganho superaditivo para as duas combinações que a
  *    hidrologia trata como deflagradoras: solo saturado com chuva intensa
  *    (enxurrada) e acumulado de 5 dias com encosta em movimento
  *    (deslizamento).
- * 4. **Escalada de protocolo** — variável acima do limiar máximo eleva o
+ * 4. **Escalada de protocolo**: variável acima do limiar máximo eleva o
  *    status independentemente da pontuação, porque a Defesa Civil não espera
  *    a média subir para evacuar uma encosta em ruptura.
  */

@@ -1,0 +1,129 @@
+:host {
+  display: block;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+}
+
+.map__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: 520px;
+}
+
+.map__graticule {
+  line {
+    stroke: var(--color-outline);
+    stroke-width: 1;
+  }
+}
+
+.map__coord {
+  font-family: var(--font-mono);
+  font-size: 1.1px;
+  fill: var(--color-text-disabled);
+}
+
+.map__land {
+  fill: var(--color-surface-variant);
+  stroke: var(--color-outline-strong);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+
+.marker {
+  cursor: pointer;
+  outline: none;
+
+  &:focus-visible .marker__ring,
+  &:focus-visible .marker__dot {
+    stroke: var(--color-primary);
+    stroke-width: 0.35;
+  }
+}
+
+.marker__hit {
+  fill: transparent;
+}
+
+.marker__dot {
+  fill: var(--tone);
+  stroke: var(--color-background);
+  stroke-width: 0.3;
+}
+
+.marker--offline .marker__dot {
+  fill: var(--color-text-disabled);
+}
+
+.marker__ring {
+  fill: none;
+  stroke: var(--color-text);
+  stroke-width: 1;
+}
+
+.marker__cross {
+  stroke: var(--color-text);
+  stroke-width: 1;
+}
+
+.marker__pulse {
+  fill: none;
+  stroke: var(--tone);
+  stroke-width: 0.25;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: marker-pulse 2400ms var(--ease-standard) infinite;
+}
+
+.marker__place {
+  font-family: var(--font-family);
+  font-size: 1.45px;
+  font-weight: 500;
+  text-anchor: end;
+  fill: var(--color-text);
+}
+
+.marker__score {
+  font-family: var(--font-mono);
+  font-size: 1.3px;
+  text-anchor: end;
+  fill: var(--tone);
+}
+
+.marker__place[data-side='right'],
+.marker__score[data-side='right'] {
+  text-anchor: start;
+}
+
+.marker:not(.marker--selected) .marker__place {
+  fill: var(--color-text-secondary);
+}
+
+.marker__label {
+  transition: opacity var(--duration-short) var(--ease-standard);
+}
+
+.marker__label--hidden {
+  opacity: 0;
+}
+
+.marker:hover .marker__label--hidden,
+.marker:focus-visible .marker__label--hidden {
+  opacity: 1;
+}
+
+@keyframes marker-pulse {
+  from {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(3.2);
+  }
+}

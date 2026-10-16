@@ -1,0 +1,106 @@
+<section class="audit" aria-labelledby="audit-title">
+  <header class="audit__header">
+    <h2 id="audit-title" class="section-label">Disparos à população</h2>
+
+    <ul class="audit__summary tabular">
+      <li>{{ summary().total }} {{ summary().total === 1 ? 'disparo' : 'disparos' }}</li>
+      <li>{{ summary().manual }} {{ summary().manual === 1 ? 'manual' : 'manuais' }}</li>
+      @if (summary().pendingSync > 0) {
+        <li class="audit__summary--warning">
+          {{ summary().pendingSync }} aguardando sincronização
+        </li>
+      }
+    </ul>
+  </header>
+
+  <div class="audit__scroll panel">
+    <table mat-table class="audit__table" [dataSource]="rows()" [trackBy]="trackById">
+      <ng-container matColumnDef="protocol">
+        <th mat-header-cell *matHeaderCellDef>Protocolo</th>
+        <td mat-cell *matCellDef="let row">
+          <span class="cell__primary cell__primary--nowrap tabular">{{ row.protocol }}</span>
+          <span class="cell__secondary tabular">{{ row.createdAt }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="station">
+        <th mat-header-cell *matHeaderCellDef>Estação</th>
+        <td mat-cell *matCellDef="let row">
+          <span class="cell__primary">{{ row.stationName }}</span>
+          <span class="cell__secondary">Bacia {{ row.basinCode }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="severity">
+        <th mat-header-cell *matHeaderCellDef>Severidade</th>
+        <td mat-cell *matCellDef="let row">
+          <span class="risk-chip" [attr.data-status]="row.status">{{ row.status }}</span>
+          <span class="cell__secondary tabular">Risco {{ row.riskScore }}%</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="origin">
+        <th mat-header-cell *matHeaderCellDef>Origem</th>
+        <td mat-cell *matCellDef="let row">
+          <span class="cell__primary">{{ row.isManual ? 'Manual' : 'Automático' }}</span>
+          <span class="cell__secondary">{{ row.operator }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="channels">
+        <th mat-header-cell *matHeaderCellDef>Canais</th>
+        <td mat-cell *matCellDef="let row">
+          <ul class="channels">
+            @for (channel of row.channels; track channel.channel) {
+              <li
+                class="channel"
+                tabindex="0"
+                [attr.data-tone]="channel.status.tone"
+                [attr.aria-label]="channel.tooltip"
+                [matTooltip]="channel.tooltip"
+              >
+                <span class="channel__dot" aria-hidden="true"></span>
+                {{ channel.label }}
+                <span class="channel__latency tabular">{{
+                  channel.latency ?? channel.status.label
+                }}</span>
+              </li>
+            }
+          </ul>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="latency">
+        <th mat-header-cell *matHeaderCellDef class="cell--numeric">Latência</th>
+        <td mat-cell *matCellDef="let row" class="cell--numeric">
+          <span class="latency tabular" [attr.data-tone]="row.latencyTone">{{ row.latency }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="population">
+        <th mat-header-cell *matHeaderCellDef class="cell--numeric">Notificados</th>
+        <td mat-cell *matCellDef="let row" class="cell--numeric">
+          <span class="cell__primary tabular">{{ row.population }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="sync">
+        <th mat-header-cell *matHeaderCellDef>Sync</th>
+        <td mat-cell *matCellDef="let row">
+          <span class="sync" [class.sync--pending]="!row.isSynced">
+            {{ row.isSynced ? 'Sincronizado' : 'Pendente' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+
+      <tr class="mat-mdc-row" *matNoDataRow>
+        <td class="audit__empty" [attr.colspan]="columns.length">
+          Nenhum disparo registrado. Simule uma tempestade extrema ou dispare um alerta manual.
+        </td>
+      </tr>
+    </table>
+  </div>
+</section>

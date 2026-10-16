@@ -21,9 +21,21 @@ describe('MockTelemetryRepository', () => {
     expect(TestBed.inject(TelemetryRepository)).toBe(repository);
   });
 
-  it('semeia as três bacias do PN-PDC', () => {
-    expect(repository.stations().map((s) => s.basin.code)).toEqual(['62', '38', '33']);
-    expect(repository.stations().map((s) => s.basin.state)).toEqual(['RS', 'RJ', 'PE']);
+  it('semeia nove estações nas cinco regiões do país', () => {
+    expect(repository.stations().map((s) => s.basin.state)).toEqual([
+      'RS',
+      'RJ',
+      'PE',
+      'SC',
+      'SP',
+      'MG',
+      'AC',
+      'AM',
+      'MT',
+    ]);
+    expect(new Set(repository.stations().map((s) => s.basin.region))).toEqual(
+      new Set(['Sul', 'Sudeste', 'Nordeste', 'Norte', 'Centro-Oeste']),
+    );
   });
 
   it('materializa a predição de cada estação semeada', () => {
@@ -75,7 +87,7 @@ describe('MockTelemetryRepository', () => {
       id: 'a',
       protocol: `SGI-${new Date().getFullYear()}-000001`,
       stationId: 'EST-PE-33-JABOATAO',
-      stationName: 'Estação Jardim Monte Verde — Jaboatão',
+      stationName: 'Estação Jardim Monte Verde (Jaboatão)',
       basinCode: '33',
       status: 'ALERTA',
       riskScore: 72,

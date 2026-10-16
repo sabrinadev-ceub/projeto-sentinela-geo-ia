@@ -13,7 +13,7 @@ export interface StorageFailure {
  * Acesso ao LocalStorage com cache em memória e relato de falha.
  *
  * O cache evita reparsear JSON a cada leitura durante o streaming de sensores,
- * e mantém o app funcional quando a gravação falha por cota estourada — é a
+ * e mantém o app funcional quando a gravação falha por cota estourada. É a
  * base do suporte PWA offline-first.
  */
 @Injectable({ providedIn: 'root' })

@@ -1,0 +1,40 @@
+<section class="selector" aria-labelledby="selector-title">
+  <header class="selector__header">
+    <h2 id="selector-title" class="section-label">Estações</h2>
+    <span class="selector__hint">Selecione para examinar</span>
+  </header>
+
+  <div class="selector__options" role="group" aria-label="Selecionar estação em foco">
+    @for (option of options(); track option.id) {
+      <button
+        type="button"
+        class="option risk-tone"
+        [attr.data-status]="option.status"
+        [class.option--selected]="option.selected"
+        [attr.aria-pressed]="option.selected"
+        (click)="select(option.id)"
+      >
+        <span class="option__main">
+          <span class="option__name">{{ option.name }}</span>
+          <span class="option__meta">
+            <span class="option__code mono">{{ option.id }}</span>
+            {{ option.location }}
+            @if (!option.isOnline) {
+              <span class="option__offline">· sem enlace</span>
+            }
+          </span>
+        </span>
+
+        <span class="option__side">
+          <span class="risk-chip" [attr.data-status]="option.status">{{ option.status }}</span>
+          <span class="option__score tabular">
+            {{ option.riskScore }}<small>%</small>
+            <span class="option__trend" role="img" [attr.aria-label]="option.trendLabel">{{
+              option.trendSymbol
+            }}</span>
+          </span>
+        </span>
+      </button>
+    }
+  </div>
+</section>

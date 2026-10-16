@@ -1,0 +1,107 @@
+<div class="page container">
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="14.5" />
+        <circle cx="16" cy="16" r="9" />
+        <path class="brand__sweep" d="M16 16 L16 1.5" />
+        <circle class="brand__core" cx="16" cy="16" r="2.2" />
+      </svg>
+      <div class="brand__text">
+        <span class="section-label">Sentinela GeoIA · Sistema de Alerta Antecipado</span>
+        <div class="brand__heading">
+          <h1 class="brand__title">Central de Comando</h1>
+          <span class="brand__badge mono">PN-PDC {{ goal.horizon }} · Meta {{ goal.code }}</span>
+          <span
+            class="telemetry"
+            [class.telemetry--degraded]="!telemetryLive()"
+            role="status"
+            [attr.aria-label]="telemetryLabel()"
+          >
+            <span class="telemetry__dot" aria-hidden="true"></span>
+            {{ sensorNetwork }} / PWA Sync
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="topbar__side">
+      <p class="sync-warning" role="status">
+        @if (syncWarning(); as warning) {
+          <span class="sync-warning__dot" aria-hidden="true"></span>
+          {{ warning }}
+        }
+      </p>
+
+      <div class="clock" aria-label="Horário operacional">
+        <time class="clock__time mono">{{ clock().time }}</time>
+        <span class="clock__date">{{ clock().date }}</span>
+      </div>
+
+      <span class="topbar__divider" aria-hidden="true"></span>
+
+      <div class="simulation" role="group" aria-label="Controles de simulação">
+        <span class="section-label">Simulação</span>
+        <button
+          type="button"
+          class="simulation__storm"
+          [class.simulation__storm--active]="stormActive()"
+          (click)="simulateStorm()"
+        >
+          <svg class="simulation__icon" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M9.2 1.5 3.5 9h4l-1 5.5L12.5 7h-4z" />
+          </svg>
+          Tempestade extrema
+        </button>
+        <button type="button" class="simulation__reset" (click)="resetSimulation()">
+          Reiniciar
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <app-network-status-bar [stations]="facade.stations()" />
+
+  <section class="network" aria-labelledby="network-title">
+    <div class="network__column">
+      <header class="network__header">
+        <h2 id="network-title" class="section-label">Rede de monitoramento</h2>
+        <span class="network__meta mono">{{ facade.stations().length }} estações · LoRaWAN</span>
+      </header>
+      <div class="network__map panel">
+        <app-station-map
+          [stations]="facade.stations()"
+          [selectedStationId]="facade.selectedStation()?.id ?? null"
+          (stationSelected)="onStationSelected($event)"
+        />
+      </div>
+    </div>
+
+    <app-station-selector
+      class="network__column"
+      [stations]="facade.stations()"
+      [selectedStationId]="facade.selectedStation()?.id ?? null"
+      (stationSelected)="onStationSelected($event)"
+    />
+  </section>
+
+  <app-watch-log [events]="facade.watchLog()" />
+
+  <app-xai-shap-panel
+    [station]="facade.selectedStation()"
+    [assessment]="facade.selectedAssessment()"
+    [canTriggerAlert]="facade.canTriggerManualAlert()"
+    [isDispatching]="facade.isDispatching()"
+    [history]="facade.selectedHistory()"
+    (manualAlertRequested)="onManualAlertRequested()"
+  />
+
+  <app-station-monitor-grid
+    [station]="facade.selectedStation()"
+    [history]="facade.selectedHistory()"
+  />
+
+  <app-alert-audit-table [dispatches]="facade.alertHistory()" />
+
+  <app-kpi-summary-bar [kpis]="facade.kpis()" />
+</div>

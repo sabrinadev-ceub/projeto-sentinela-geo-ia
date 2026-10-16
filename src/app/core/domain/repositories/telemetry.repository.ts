@@ -7,7 +7,7 @@ import { SensorReading, StationTelemetry } from '../models/station-telemetry.mod
  *
  * É uma `abstract class` em vez de uma `interface` por dois motivos: serve
  * como token de injeção em runtime (`inject(TelemetryRepository)`) e permite
- * inverter a dependência (DIP) — os use cases e as features dependem desta
+ * inverter a dependência (DIP): os use cases e as features dependem desta
  * classe, nunca de `MockTelemetryRepository` ou de um futuro cliente HTTP.
  *
  * O estado é exposto como `Signal` para que a camada de apresentação derive

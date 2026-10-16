@@ -1,0 +1,32 @@
+<section class="log" aria-labelledby="log-title">
+  <header class="log__header">
+    <h2 id="log-title" class="section-label">Diário de vigilância</h2>
+    <span class="log__hint">Mudanças de nível confirmadas e disparos, do mais recente</span>
+  </header>
+
+  <div class="log__panel panel">
+    @if (entries().length > 0) {
+      <ol class="log__list" aria-live="polite">
+        @for (entry of entries(); track entry.id) {
+          <li class="entry risk-tone" [attr.data-status]="entry.status">
+            <span class="entry__top">
+              <time class="entry__time mono">{{ entry.time }}</time>
+              <span class="entry__kind">
+                <span
+                  class="entry__marker"
+                  [class.entry__marker--dispatch]="entry.kind === 'DISPATCH'"
+                  aria-hidden="true"
+                ></span>
+                {{ entry.kindLabel }}
+              </span>
+            </span>
+            <span class="entry__station">{{ entry.stationName }}</span>
+            <span class="entry__description">{{ entry.description }}</span>
+          </li>
+        }
+      </ol>
+    } @else {
+      <p class="log__empty">Nenhuma mudança de nível ou disparo desde o início do turno.</p>
+    }
+  </div>
+</section>

@@ -1,0 +1,56 @@
+@if (readings(); as station) {
+  <section class="readings" aria-labelledby="readings-title">
+    <header class="readings__header">
+      <h2 id="readings-title" class="section-label">Leituras dos sensores</h2>
+      <p class="readings__meta tabular">
+        <span class="mono" [class.readings__stale]="!station.isOnline">
+          {{ station.isOnline ? 'Última leitura' : 'Sem enlace desde' }} {{ station.measuredAt }}
+        </span>
+        <span class="mono">{{ station.coordinates }}</span>
+        <span class="mono">Alt. {{ station.altitude }}</span>
+      </p>
+    </header>
+
+    <div class="readings__grid panel">
+      @for (measure of station.measurements; track measure.variable) {
+        <article class="measure risk-tone" [attr.data-status]="measure.status">
+          <header class="measure__header">
+            <h3 class="measure__label">{{ measure.label }}</h3>
+            <span class="risk-chip" [attr.data-status]="measure.status">{{ measure.status }}</span>
+          </header>
+
+          <p class="measure__value tabular">
+            {{ measure.value }}<span class="measure__unit">{{ measure.unit }}</span>
+          </p>
+
+          <app-trend-chart
+            class="measure__chart"
+            [values]="measure.series"
+            [max]="measure.scaleMax"
+            [capacity]="historyCapacity"
+            [guides]="measure.guides"
+            [label]="
+              'Evolução de ' +
+              measure.label +
+              ', leitura atual ' +
+              measure.value +
+              ' ' +
+              measure.unit
+            "
+          />
+
+          <dl class="measure__facts">
+            <div>
+              <dt>Referência</dt>
+              <dd>{{ measure.reference }}</dd>
+            </div>
+            <div>
+              <dt>Contexto</dt>
+              <dd>{{ measure.detail }}</dd>
+            </div>
+          </dl>
+        </article>
+      }
+    </div>
+  </section>
+}

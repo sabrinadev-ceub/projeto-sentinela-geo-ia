@@ -15,7 +15,7 @@ import { ModalService } from './modal.service';
  * renderiza o que `ModalService` publicar.
  *
  * Cada modal é um `<dialog>` nativo aberto por `showModal()`, o que entrega de
- * graça a top layer, o backdrop, o focus trap e o ESC — nada disso é
+ * graça a top layer, o backdrop, o focus trap e o ESC. Nada disso é
  * reimplementado aqui, e é por isso que o sistema não precisa de biblioteca de
  * UI externa.
  */

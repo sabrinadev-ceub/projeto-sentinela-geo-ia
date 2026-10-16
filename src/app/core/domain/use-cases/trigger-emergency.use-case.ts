@@ -32,7 +32,7 @@ export interface TriggerEmergencyInput {
  * fechar no meio da difusão, o protocolo já está em LocalStorage com os canais
  * em `PENDING`, e não se perde o rastro de que o alerta foi acionado.
  *
- * Sem rede o disparo não falha — os canais entram em `QUEUED_OFFLINE` e o
+ * Sem rede o disparo não falha: os canais entram em `QUEUED_OFFLINE` e o
  * registro fica `PENDING_SYNC`, que é o comportamento esperado de um PWA
  * offline-first operando em área de desastre.
  */
@@ -186,7 +186,7 @@ export function buildMessage(station: StationTelemetry, assessment: RiskAssessme
         : 'Mantenha-se atento e evite encostas e margens de rio.';
 
   return (
-    `${assessment.status} — Bacia ${station.basin.code} (${station.basin.name}/${station.basin.state}): ` +
+    `${assessment.status} na Bacia ${station.basin.code} (${station.basin.name}/${station.basin.state}): ` +
     `risco de ${assessment.riskScore}% em ${station.name}, ${station.city}. ` +
     `Motivo: ${cause}. ${action}`
   );

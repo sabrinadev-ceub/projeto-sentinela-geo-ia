@@ -1,0 +1,25 @@
+@let current = condition();
+
+<section
+  class="bar risk-tone"
+  [attr.data-status]="current.status"
+  [class.bar--calm]="current.status === 'NORMAL'"
+  role="status"
+  aria-live="polite"
+  aria-label="Condição da rede"
+>
+  <div class="bar__main">
+    <span class="section-label">Condição da rede</span>
+    <p class="bar__headline">
+      <span class="bar__dot" aria-hidden="true"></span>
+      {{ current.headline }}
+    </p>
+    <p class="bar__guidance">{{ current.guidance }}</p>
+  </div>
+
+  <ul class="bar__counts" aria-label="Estações por nível">
+    @for (item of current.counts; track item.status) {
+      <li class="risk-chip" [attr.data-status]="item.status">{{ item.count }} {{ item.status }}</li>
+    }
+  </ul>
+</section>

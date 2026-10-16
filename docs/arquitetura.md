@@ -7,7 +7,8 @@ estado vive em Signals dentro de serviços e repositórios; a persistência é
 LocalStorage, o que sustenta o comportamento PWA offline-first.
 
 A biblioteca de componentes é o Angular Material 22, tematizado sobre os
-nossos design tokens. Tailwind está fora do projeto por decisão de stack.
+nossos design tokens. Tailwind está fora do projeto por decisão de stack: o
+estilo de componente é SCSS sobre os tokens.
 
 ## Layout de pastas
 
@@ -22,10 +23,9 @@ src/
     _tokens.scss              Design tokens (cores, escala, easing, tipografia)
     _material.scss            Tema M3 do Material amarrado aos tokens
     _reset.scss
-    _background.scss          Padrão de curvas de nível do plano de fundo
     _typography.scss
     _animations.scss          fade-in-up, scale-in, risk-pulse
-    _patterns.scss            page-header, risk-chip
+    _patterns.scss            page-header, panel, section-label, risk-tone, risk-chip
   app/
     app.ts                    Shell: router-outlet + host de modais
     app.config.ts             Providers da aplicação
@@ -50,8 +50,14 @@ src/
       ui/
         index.ts              Barrel de UI
         modal/                Sistema de modal nativo
-    layout/                   Shell de navegação (etapa 2)
-    features/                 Uma pasta por tela (etapa 2)
+    presentation/             Camada de apresentação (MVC + Facade)
+      controllers/
+        command-center.facade.ts   Controller da Central de Comando
+      models/                 View models e estado exposto pelo Facade
+      views/
+        formatters.ts         Formatação pt-BR pura (número, duração, hora)
+        pages/                Componentes smart: um por tela
+        components/           Componentes dumb: só input/output
 ```
 
 ## Anéis
@@ -68,9 +74,81 @@ src/
 **`shared`** oferece UI e diretivas reutilizáveis. Conhece os modelos de
 domínio, nunca os repositórios nem os casos de uso.
 
-**`features`** compõe casos de uso de `core` com componentes de `shared`.
+**`presentation`** compõe casos de uso de `core` com componentes de `shared`.
+Ocupa o lugar que o padrão de referência chama de `features`.
 
-**`layout`** é o shell de navegação.
+### MVC, Facade e Smart/Dumb
+
+- **Controller / Facade**: `CommandCenterFacade` é o único ponto da tela que
+  injeta `TelemetryRepository`, os casos de uso e o `ModalService`. Expõe
+  estado apenas como `Signal`/`computed` somente leitura (estações, estação
+  ativa, predição com drivers SHAP, histórico de disparos, sincronização PWA e
+  KPIs da Meta 2.2.4) e recebe as intenções do operador por métodos de ação:
+  `selectStation`, `simulateExtremeStorm`, `triggerManualAlert`,
+  `resetSimulation`.
+- **Página (smart)**: `CommandCenterPage` injeta só o Facade, repassa o estado
+  por `input` e transforma `output` em chamada de ação.
+- **Componentes (dumb)**: `OnPush`, `input.required()`/`output()`, sem
+  serviço de negócio injetado. Cada um projeta os dados crus em view models
+  com `computed()` e decide apenas a apresentação (SRP); um KPI ou uma
+  grandeza física nova entra como mais um item de view model, sem tocar no
+  template (OCP).
+
+A modal de tempestade extrema recebe por `MODAL_DATA` um `Signal` do disparo,
+não um valor: ela abre no instante do registro e mostra cada canal mudando de
+`PENDING` para `DELIVERED` com a latência medida.
+
+O painel SHAP mostra uma barra por variável do modelo (cinco, somando 100%).
+As leituras dos sensores agrupam as cinco em quatro réguas: chuva 5 dias
+(com a de 24h como leitura complementar), nível do rio contra a cota de
+transbordo, saturação do solo e inclinômetro. A cota de transbordo é o limiar
+máximo da régua da estação.
+
+### Hierarquia da Central de Comando
+
+Os blocos seguem a ordem de leitura do plantão, do mais urgente ao menos
+urgente:
+
+1. `network-status-bar`: nível mais grave da rede, onde ele está e a conduta
+   do protocolo. Responde "alguma área está em risco agora?".
+2. `station-map`, `station-selector` e `watch-log`: onde está o risco. O mapa
+   plota cada estação na coordenada real; a lista dá nome, código e
+   tendência; o diário registra cada mudança de nível e cada disparo.
+3. `xai-shap-panel`: estação em foco, com a probabilidade de risco em
+   destaque, a evolução recente, o porquê (SHAP) e o disparo manual.
+4. `station-monitor-grid`: leituras brutas que sustentam a predição, cada uma
+   com o gráfico de evolução contra os limiares.
+5. `alert-audit-table`: o que já foi disparado.
+6. `kpi-summary-bar`: indicadores de longo prazo da Meta 2.2.4, por último
+   para não disputar atenção com o risco imediato.
+
+A linguagem visual é minimalista: fundo preto, texto branco, cor pastel
+reservada a status e ao destaque principal, sem gradientes, sombras ou
+ícones decorativos. Branco sólido marca a única ação primária da tela.
+Horários, coordenadas, códigos de estação e protocolos usam IBM Plex Mono,
+como num instrumento; o resto do texto usa Inter.
+
+### Histórico do streaming
+
+O repositório guarda só o estado atual de cada estação. A evolução que os
+gráficos e o diário mostram é acumulada no Facade por um `linkedSignal`, que
+recebe as estações a cada ciclo e acrescenta a leitura nova ao valor
+anterior: `HISTORY_SIZE` leituras por estação (3 minutos a 4 s por ciclo).
+Reiniciar a simulação descarta esse histórico.
+
+O diário só aceita uma mudança de nível quando o novo status se mantém por
+`STATUS_CONFIRMATION_SAMPLES` leituras seguidas. Perto de um limiar o risco
+oscila, e sem essa histerese o diário se encheria de idas e vindas entre
+NORMAL e ATENÇÃO. A escalada para ALERTA ou acima é a exceção e entra na hora.
+
+`trend-chart` é o gráfico compartilhado pelo painel de risco e pelas
+leituras. Os pontos entram pela direita, ocupando só a fração do eixo já
+coletada, para que três leituras não sejam esticadas pela largura inteira e
+sugiram uma tendência que ainda não existe.
+
+O contorno do mapa vem do Natural Earth 1:50m (domínio público), via
+`world-atlas`, simplificado e embutido como constante em
+`station-map/brazil-outline.ts`; o pacote não é dependência do projeto.
 
 ### Por que a Clean Architecture mora dentro de `core`
 
@@ -84,13 +162,13 @@ abaixo.
 
 Equivalência com a nomenclatura canônica de Clean Architecture:
 
-| Camada canônica  | Caminho no projeto         |
-| ---------------- | -------------------------- |
-| Entities         | `core/domain/models`       |
-| Repository ports | `core/domain/repositories` |
-| Use cases        | `core/domain/use-cases`    |
-| Infrastructure   | `core/data/repositories`   |
-| Presentation     | `features`, `shared/ui`    |
+| Camada canônica  | Caminho no projeto          |
+| ---------------- | --------------------------- |
+| Entities         | `core/domain/models`        |
+| Repository ports | `core/domain/repositories`  |
+| Use cases        | `core/domain/use-cases`     |
+| Infrastructure   | `core/data/repositories`    |
+| Presentation     | `presentation`, `shared/ui` |
 
 ## Inversão de dependência
 
@@ -144,13 +222,13 @@ disparo auditado se reconstrói em teste.
 Quatro etapas, documentadas em
 `core/domain/use-cases/calculate-risk-xai.use-case.ts`:
 
-1. **Normalização** — cada leitura vira severidade de 0 a 1 por interpolação
+1. **Normalização**: cada leitura vira severidade de 0 a 1 por interpolação
    linear entre os limiares da estação (0 → `attention` = 0 a 0,4;
    `attention` → `alert` = 0,4 a 0,7; `alert` → `maximum` = 0,7 a 1).
-2. **Ponderação** — soma pelas importâncias base, que somam 1.
-3. **Interação** — ganho superaditivo para solo saturado + chuva intensa
+2. **Ponderação**: soma pelas importâncias base, que somam 1.
+3. **Interação**: ganho superaditivo para solo saturado + chuva intensa
    (enxurrada) e acumulado de 5 dias + encosta em movimento (deslizamento).
-4. **Escalada de protocolo** — variável acima do limiar máximo eleva o status
+4. **Escalada de protocolo**: variável acima do limiar máximo eleva o status
    independentemente da pontuação.
 
 Os pesos SHAP são a contribuição relativa de cada variável, convertida em
@@ -161,12 +239,12 @@ percentual inteiro por maiores restos para que a soma feche exatamente 100.
 `src/styles/_material.scss` faz duas coisas, nesta ordem:
 
 1. `mat.theme()` emite o conjunto completo de variáveis `--mat-sys-*`, com
-   Inter como família `plain` e Manrope como `brand`.
+   Inter como família `plain` e `brand`.
 2. `mat.theme-overrides()` repinta cada papel de cor, raio e elevação do
    Material para os nossos tokens (`--color-*`, `--radius-*`, `--shadow-*`).
 
-A ordem importa: sem o passo 2, o app teria dois sistemas de cor concorrentes
-— a paleta M3 gerada do `$cyan-palette` e os nossos tokens. Com ele, os
+A ordem importa: sem o passo 2, o app teria dois sistemas de cor concorrentes:
+a paleta M3 gerada do `$cyan-palette` e os nossos tokens. Com ele, os
 tokens são a única fonte de verdade e o Material vira consumidor.
 
 A troca claro/escuro não precisa de código: `mat.theme()` usa
@@ -185,7 +263,7 @@ backdrop, focus trap e ESC vêm do navegador.
 
 ### Por que não `MatDialog`
 
-Com o Material disponível, `MatDialog` passou a ser uma opção — e foi
+Com o Material disponível, `MatDialog` passou a ser uma opção, e foi
 descartada por três motivos concretos:
 
 - **Granularidade.** `MatDialog.open()` exige um componente por diálogo. Um
@@ -194,22 +272,22 @@ descartada por três motivos concretos:
   config.
 - **Reatividade.** O ciclo do `MatDialog` é `afterClosed(): Observable`. O
   requisito do projeto é pilha em Signals, e `ModalService.stack` é um
-  `Signal` que a UI consome com `computed()` — incluindo o estado `closing`,
+  `Signal` que a UI consome com `computed()`, incluindo o estado `closing`,
   que não tem equivalente no `MatDialogRef`.
 - **Animação.** O modal crítico tem halo pulsante, entrada em cascata dos
   detalhes e saída coordenada com `MODAL_EXIT_DURATION_MS`. Sobre `MatDialog`
   isso significaria sobrescrever a animação interna do componente.
 
-O que o Material entrega de graça aqui — top layer, backdrop, focus trap, ESC
-— o `<dialog>` nativo também entrega, sem o CDK Overlay no meio.
+O que o Material entrega de graça aqui (top layer, backdrop, focus trap, ESC)
+o `<dialog>` nativo também entrega, sem o CDK Overlay no meio.
 
 Isso vale para o modal, não para o resto: tabela, formulário, menu, tooltip,
 snackbar e datepicker da etapa 2 vêm do Material.
 
-- `modal.model.ts` — tipos, tokens `MODAL_DATA`/`MODAL_REF` e a duração de
+- `modal.model.ts`: tipos, tokens `MODAL_DATA`/`MODAL_REF` e a duração de
   saída compartilhada com o SCSS.
-- `modal.service.ts` — pilha em Signals, `open`/`confirm`/`alert`/`emergency`.
-- `modal.component.ts` — host único montado em `app.ts`, renderiza a pilha.
+- `modal.service.ts`: pilha em Signals, `open`/`confirm`/`alert`/`emergency`.
+- `modal.component.ts`: host único montado em `app.ts`, renderiza a pilha.
 
 Todo fechamento passa por `ModalService.close()`, que marca `closing` e só
 remove o registro depois de `MODAL_EXIT_DURATION_MS`. Com isso ESC, backdrop,
@@ -229,7 +307,7 @@ botão de ação e fechamento programático animam igual.
   (`@if`, `@for`).
 - Componentes do Material são importados por módulo próprio e direto no
   `imports` do componente que os usa (`MatTableModule`, `MatTooltipModule`),
-  nunca agregados em um módulo compartilhado — é o que mantém o tree-shaking.
+  nunca agregados em um módulo compartilhado, e é isso que mantém o tree-shaking.
 - Estilo de componente do Material se ajusta por `--mat-*` no escopo do
   componente, nunca por `::ng-deep`.
 - Comentário explica decisão, nunca mecânica. Arquivos `.html`, `.scss` e

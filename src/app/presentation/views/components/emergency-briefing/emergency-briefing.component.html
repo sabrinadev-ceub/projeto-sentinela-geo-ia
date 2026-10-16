@@ -1,0 +1,69 @@
+<section class="block" aria-labelledby="briefing-broadcast">
+  <header class="block__header">
+    <h3 id="briefing-broadcast" class="block__title">Difusão multicanal</h3>
+    @if (dispatch(); as current) {
+      <span class="block__code tabular">{{ current.protocol }}</span>
+    }
+  </header>
+
+  @if (dispatch(); as current) {
+    <p class="progress tabular" aria-live="polite">
+      @if (current.syncState === 'PENDING_SYNC') {
+        Sem rede: disparo registrado localmente e enfileirado para sincronização.
+      } @else if (progress().complete) {
+        {{ progress().done }} de {{ progress().total }} canais responderam em {{ responseTime() }}.
+      } @else {
+        Difundindo… {{ progress().done }} de {{ progress().total }} canais responderam.
+      }
+    </p>
+
+    <ul class="channels">
+      @for (channel of channels(); track channel.channel) {
+        <li class="channel" [attr.data-tone]="channel.status.tone">
+          <span class="channel__name">
+            {{ channel.label }}
+            <span class="channel__reach">{{ channel.reach }}</span>
+          </span>
+          <span class="channel__status">
+            <span class="channel__dot" aria-hidden="true"></span>
+            {{ channel.status.label }}
+          </span>
+          <span class="channel__latency tabular">{{ channel.latency }}</span>
+        </li>
+      }
+    </ul>
+
+    <blockquote class="message">{{ current.message }}</blockquote>
+  } @else {
+    <p class="progress">Registrando o protocolo de disparo…</p>
+  }
+</section>
+
+@if (route; as evacuation) {
+  <section class="block" aria-labelledby="briefing-route">
+    <header class="block__header">
+      <h3 id="briefing-route" class="block__title">Rota de evacuação acionada</h3>
+      <span class="block__code">{{ evacuation.code }}</span>
+    </header>
+
+    <div class="route">
+      <p class="route__name">{{ evacuation.name }}</p>
+      <p class="route__shelter">{{ evacuation.shelter }} · {{ evacuation.shelterAddress }}</p>
+    </div>
+
+    <dl class="facts">
+      @for (fact of routeFacts; track fact.label) {
+        <div class="fact">
+          <dt>{{ fact.label }}</dt>
+          <dd class="tabular">{{ fact.value }}</dd>
+        </div>
+      }
+    </dl>
+
+    <ol class="waypoints">
+      @for (waypoint of evacuation.waypoints; track $index) {
+        <li>{{ waypoint }}</li>
+      }
+    </ol>
+  </section>
+}

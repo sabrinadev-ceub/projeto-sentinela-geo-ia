@@ -86,13 +86,8 @@ $breakpoint-sheet: 640px;
     content: '';
     position: absolute;
     inset: 0 0 auto;
-    height: 3px;
-    background: linear-gradient(
-      90deg,
-      var(--modal-accent) 0%,
-      color-mix(in srgb, var(--modal-accent) 35%, transparent) 60%,
-      transparent 100%
-    );
+    height: 2px;
+    background: var(--modal-accent);
   }
 
   @media (min-width: $breakpoint-sheet) {
@@ -300,7 +295,7 @@ $breakpoint-sheet: 640px;
   gap: var(--space-2);
   min-height: 44px;
   padding: 0 var(--space-5);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-md);
   font-size: 0.9375rem;
   font-weight: 600;
   color: var(--color-on-primary);
