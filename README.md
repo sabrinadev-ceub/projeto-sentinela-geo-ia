@@ -138,6 +138,7 @@ Assim cada deploy invalida só o que mudou.
 ## Estrutura do Projeto
 
 ```
+public/          Favicon do radar (SVG + ICO multirresolução)
 src/app/
   core/          Regra de negócio, sem dependência de UI
     constants/   Limiares, pesos, política de canais, chaves de storage
@@ -145,8 +146,10 @@ src/app/
     data/        Implementações dos contratos
     services/    Infraestrutura (LocalStorage)
   shared/        Diretivas e UI reutilizável
-  layout/        Shell de navegação
-  features/      Uma pasta por tela
+  presentation/  Camada de apresentação (MVC + Facade)
+    controllers/ Facades que orquestram os casos de uso
+    models/      View models expostos às telas
+    views/       Páginas smart e componentes dumb
 src/styles/      Tokens e parciais SCSS globais
 ```
 

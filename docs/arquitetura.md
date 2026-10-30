@@ -14,6 +14,8 @@ estilo de componente é SCSS sobre os tokens.
 
 ```
 public/                       Assets estáticos
+  favicon.svg                 Marca do radar, segue o esquema de cores
+  favicon.ico                 Fallback com arte própria em 16/32/48
 docs/                         Esta documentação
 src/
   index.html                  Shell + bootstrap de tema + fontes
@@ -327,5 +329,9 @@ de infraestrutura do projeto, e está em `vercel.json`. Parâmetros em
   nunca agregados em um módulo compartilhado, e é isso que mantém o tree-shaking.
 - Estilo de componente do Material se ajusta por `--mat-*` no escopo do
   componente, nunca por `::ng-deep`.
+- O favicon é um radar de anel único, e não o glyph `radar` do Material: a
+  16px os três anéis concêntricos do original colapsam em um borrão. Cada
+  tamanho do `.ico` é rasterizado no tamanho final, nunca reamostrado de um
+  master maior, que é o que mantém a aba nítida.
 - Comentário explica decisão, nunca mecânica. Arquivos `.html`, `.scss` e
   `.spec.ts` não levam comentário.
