@@ -293,6 +293,23 @@ Todo fechamento passa por `ModalService.close()`, que marca `closing` e só
 remove o registro depois de `MODAL_EXIT_DURATION_MS`. Com isso ESC, backdrop,
 botão de ação e fechamento programático animam igual.
 
+## Build e deploy
+
+O alvo é um artefato estático. Nenhum anel do projeto depende de servidor,
+runtime de SSR ou variável de ambiente: a fronteira externa do sistema é o
+`localStorage`, acessado só por `StorageService`. É o que permite publicar
+em CDN e é o mesmo motivo pelo qual a operação offline-first funciona.
+
+O `@angular/build:application` emite dois diretórios irmãos sob
+`dist/<projeto>/`: `browser/` com o bundle do navegador e `server/` quando há
+SSR. Aqui só o primeiro existe, e é ele a raiz publicável — o nível acima
+carrega apenas `3rdpartylicenses.txt`.
+
+Como o roteamento é do Angular, o host precisa devolver `index.html` para
+qualquer caminho não encontrado no sistema de arquivos. É a única exigência
+de infraestrutura do projeto, e está em `vercel.json`. Parâmetros em
+[`README.md`](../README.md).
+
 ## Convenções
 
 - Serviços terminam em `Service`; repositórios em `Repository`; casos de uso

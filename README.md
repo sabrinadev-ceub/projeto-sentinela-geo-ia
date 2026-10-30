@@ -79,7 +79,8 @@ offline-first esperada de um PWA usado em área de desastre.
 
 ## Como rodar o projeto?
 
-Requer Node.js 20+ e npm 10+.
+Requer Node.js 22.22.3+ (ou 24.15+) e npm 10+, conforme exigido pelo
+Angular 22.
 
 ```bash
 npm ci
@@ -92,6 +93,47 @@ Abre em `http://localhost:4200/`.
 npm run build   # build de produção em dist/
 npm test        # Vitest
 ```
+
+## Deploy na Vercel
+
+A aplicação é 100% estática: não há servidor, SSR nem variável de ambiente.
+O build gera arquivos prontos para CDN e o estado vive no `localStorage` do
+dispositivo.
+
+O [`vercel.json`](vercel.json) na raiz já traz a configuração completa, então
+basta importar o repositório na Vercel. Os parâmetros do painel, caso precise
+conferir ou preencher à mão:
+
+| Parâmetro        | Valor                                   |
+| ---------------- | --------------------------------------- |
+| Framework Preset | `Other`                                 |
+| Install Command  | `npm ci`                                |
+| Build Command    | `npm run build`                         |
+| Output Directory | `dist/projeto-sentinela-geo-ia/browser` |
+| Node.js Version  | `24.x`                                  |
+
+Três pontos merecem atenção:
+
+**O diretório de saída termina em `browser/`.** O `@angular/build:application`
+separa o bundle do navegador do de servidor, então a raiz publicável é
+`dist/<nome-do-projeto>/browser`, e não `dist/<nome-do-projeto>`. Apontar para
+o nível de cima publica um diretório sem `index.html`. O nome do meio vem de
+`projects` no [`angular.json`](angular.json): se o projeto for renomeado, o
+`outputDirectory` precisa acompanhar.
+
+**O rewrite evita o 404 ao recarregar.** Em uma SPA o roteamento é do Angular,
+não do CDN: `/qualquer-rota` não existe como arquivo. A regra manda tudo para
+`/index.html`, e como a Vercel consulta o sistema de arquivos antes de aplicar
+rewrites, os bundles e o favicon continuam sendo servidos direto.
+
+**O Node precisa ser 22.22.3+.** O Angular 22 exige
+`^22.22.3 || ^24.15.0 || >=26.0.0`, o que está declarado em `engines.node`.
+A Vercel respeita esse campo e ele tem precedência sobre o painel, então os
+dois não podem se contradizer.
+
+O cache segue o hash do build: `index.html` vai como `no-cache` e os bundles
+`.js`/`.css`, que já carregam hash no nome, vão como `immutable` por um ano.
+Assim cada deploy invalida só o que mudou.
 
 ## Estrutura do Projeto
 
